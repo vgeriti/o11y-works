@@ -1,0 +1,5 @@
+# o11y.works robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://o11y.works/sitemap.xml
