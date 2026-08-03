@@ -11,6 +11,7 @@ import { BlogIndex } from './pages/BlogIndex';
 import { BlogPost } from './pages/BlogPost';
 import { AuthorProfile } from './pages/AuthorProfile';
 import { ContributorGuide } from './pages/ContributorGuide';
+import { NotFound } from './pages/NotFound';
 
 // Scroll to top automatically on route navigation
 const ScrollToTop: React.FC = () => {
@@ -38,6 +39,8 @@ export const App: React.FC = () => {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/community" element={<Community />} />
             <Route path="/about" element={<About />} />
+            {/* Catch-all 404 Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
