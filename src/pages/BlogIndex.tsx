@@ -67,7 +67,7 @@ export const BlogIndex: React.FC = () => {
   const gridArticles = filteredArticles.filter((a) => a !== featuredArticle);
 
   return (
-    <div className="min-h-screen bg-background text-gray-100 pt-28 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-background text-gray-100 pt-28 pb-20 relative">
       {/* Background Ambient Top Radial Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-radial-gradient opacity-15 pointer-events-none" />
 

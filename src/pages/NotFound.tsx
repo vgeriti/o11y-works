@@ -4,7 +4,7 @@ import { RadioTower, Home, BookOpen, ArrowRight } from 'lucide-react';
 
 export const NotFound: React.FC = () => {
   return (
-    <div className="min-h-[80vh] bg-[#030712] text-gray-100 flex items-center justify-center pt-28 pb-20 relative overflow-hidden">
+    <div className="min-h-[80vh] bg-[#030712] text-gray-100 flex items-center justify-center pt-28 pb-20 relative">
       {/* Ambient Top Radial Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-radial-gradient opacity-15 pointer-events-none" />
 

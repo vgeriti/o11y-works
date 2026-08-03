@@ -16,7 +16,7 @@ import {
 
 export const Home: React.FC = () => {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative">
       {/* Background Radial Glow & Ambient Grid */}
       <div className="absolute top-0 inset-x-0 h-[600px] bg-radial-gradient opacity-80 pointer-events-none" />
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
