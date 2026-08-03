@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import { Logo } from '../ui/Logo';
 import { Button } from '../ui/Button';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, PenSquare } from 'lucide-react';
 
 const navItems = [
   { name: 'Home', path: '/' },
   { name: 'Ecosystem', path: '/ecosystem' },
   { name: 'Knowledge', path: '/knowledge' },
+  { name: 'Blog', path: '/blog' },
   { name: 'Community', path: '/community' },
   { name: 'About', path: '/about' },
 ];
@@ -16,6 +17,8 @@ export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  const isBlogRoute = location.pathname.startsWith('/blog');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,8 +43,15 @@ export const Header: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Logo />
+          {/* Logo + Context Badge */}
+          <div className="flex items-center gap-3">
+            <Logo />
+            {isBlogRoute && (
+              <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 tracking-wider">
+                BLOG
+              </span>
+            )}
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 bg-surface/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
@@ -50,9 +60,9 @@ export const Header: React.FC = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
-                    isActive
-                      ? 'text-white bg-white/10 shadow-sm border border-white/10'
+                  `px-3.5 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
+                    isActive || (item.path === '/blog' && isBlogRoute)
+                      ? 'text-white bg-white/10 shadow-sm border border-white/10 text-brand-cyan'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`
                 }
@@ -65,12 +75,12 @@ export const Header: React.FC = () => {
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
             <Button
-              to="/community"
-              variant="outline"
+              to="/blog/contribute"
+              variant="primary"
               size="sm"
-              icon={<ArrowUpRight className="w-3.5 h-3.5" />}
+              icon={<PenSquare className="w-3.5 h-3.5" />}
             >
-              Join Community
+              Contribute
             </Button>
           </div>
 
@@ -97,8 +107,8 @@ export const Header: React.FC = () => {
                 to={item.path}
                 className={({ isActive }) =>
                   `px-4 py-3 text-base font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'text-white bg-brand-cyan/10 border border-brand-cyan/20'
+                    isActive || (item.path === '/blog' && isBlogRoute)
+                      ? 'text-white bg-brand-cyan/20 border border-brand-cyan/40 font-semibold'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`
                 }
@@ -107,12 +117,12 @@ export const Header: React.FC = () => {
               </NavLink>
             ))}
             <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
-              <Button to="/ecosystem" variant="primary" size="md">
-                Explore Ecosystem
-              </Button>
-              <Button to="/community" variant="outline" size="md">
-                Join Community
-              </Button>
+              <Link
+                to="/blog/contribute"
+                className="w-full text-center px-4 py-3 rounded-lg text-sm font-medium bg-brand-cyan text-background font-semibold hover:bg-brand-cyan/90 transition-colors"
+              >
+                ✍️ Contributor Portal & Guidelines
+              </Link>
             </div>
           </nav>
         </div>

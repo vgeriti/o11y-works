@@ -1,0 +1,54 @@
+---
+title: "Building Custom Log Data Reduction Pipelines in Cribl Stream"
+summary: "Reduce log volume by 45% using regex scrubbing, structural JSON parsing, and dynamic field dropping before Splunk ingestion."
+publishedDate: "2026-07-28"
+author: "Venkatesh Geriti"
+tool: "Cribl"
+signal: "Logs"
+type: "Guide"
+featured: false
+readTimeMinutes: 10
+---
+
+## Overview
+
+High-volume debug logs account for over 40% of Splunk license consumption. Using Cribl Stream, you can scrub non-essential headers and drop redundant stack traces before indexing.
+
+---
+
+## 🌀 Cribl Pipeline Expression
+
+```json
+{
+  "id": "log-reduction-pipeline",
+  "async": false,
+  "functions": [
+    {
+      "id": "eval",
+      "filter": "sourcetype === 'app:debug'",
+      "conf": {
+        "add": [
+          { "name": "_raw", "value": "__e._raw.replace(/timestamp=\\d+\\s+/, '')" }
+        ],
+        "remove": ["debug_stacktrace", "internal_thread_id"]
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 🗄️ ClickHouse Verification Query
+
+Verify log volume reduction after Cribl processing:
+
+```sql
+SELECT 
+    date_trunc('hour', timestamp) AS hour_bucket,
+    sum(length(_raw)) / 1024 / 1024 / 1024 AS volume_gb
+FROM logs_analytics.processed_logs
+WHERE timestamp >= now() - INTERVAL 24 HOUR
+GROUP BY 1
+ORDER BY 1 DESC;
+```

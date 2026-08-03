@@ -12,6 +12,20 @@
     <meta name="keywords" content="observability, o11y, OpenTelemetry, Prometheus, Grafana, SRE, DevOps, telemetry, metrics, logging, tracing, eBPF" />
     <meta name="theme-color" content="#030712" />
 
+    <!-- GitHub Pages Single Page App Redirect Script -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://o11y.works/" />

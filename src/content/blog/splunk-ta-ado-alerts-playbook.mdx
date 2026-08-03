@@ -1,0 +1,42 @@
+---
+title: "Splunk TA ADO Alerts: Incident Throttling & Deduplication Playbook"
+summary: "How to configure state-aware ticket deduplication, 1-hour comment throttling, and 24h ticket re-open logic in Splunk Alert Actions."
+publishedDate: "2026-08-01"
+author: "Venkatesh Geriti"
+tool: "Splunk"
+signal: "SIEM"
+type: "Playbook"
+featured: false
+readTimeMinutes: 9
+---
+
+## Overview
+
+Repeated alert triggers during high-severity outages lead to ticket fatigue and duplicated Azure DevOps Work Items. The `TA_ado_alerts` Splunk Add-On solves this using native KVStore deduplication.
+
+---
+
+## ⚡ Alert Action Configuration
+
+Use the following SPL query in your Splunk Scheduled Search:
+
+```spl
+# Splunk SPL Query for State-Aware ADO Alert Triggers
+index=main sourcetype="kube:logs" severity="CRITICAL"
+| stats count by service_name, cluster_name, error_reason
+| eval ado_project = "SOC-Incident-Response"
+| eval ado_area_path = "CyberSecurity\\Tier-1"
+```
+
+---
+
+## 🌀 Comment Throttling Logic
+
+When an incident remains open, additional triggers append structured comments rather than creating duplicate tickets:
+
+```python
+# send_ado_webhook.py - State Engine Excerpt
+if active_ticket_exists and (now - last_comment_time) < 3600:
+    logger.info("Throttling ADO comment: trigger suppressed within 1h window")
+    return {"status": "THROTTLED", "work_item_id": existing_ticket_id}
+```
