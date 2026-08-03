@@ -14,12 +14,11 @@ export const Logo: React.FC<LogoProps> = ({ className = '', showTagline = false 
       aria-label="o11y.works Home"
     >
       {/* Telemetry Signal Node Icon */}
-      <div className="relative flex items-center justify-center w-7 h-7 rounded-lg bg-surface border border-white/10 group-hover:border-brand-cyan/40 transition-colors">
-        {/* Signal Node Dot */}
-        <span className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse" />
-        
-        {/* Subtle Outer Telemetry Pulse */}
-        <span className="absolute inset-0 rounded-lg border border-brand-cyan/30 animate-ping opacity-25 pointer-events-none" />
+      <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface border border-white/10 group-hover:border-brand-cyan/40 transition-colors p-1 overflow-hidden">
+        <svg viewBox="0 0 32 32" fill="none" className="w-full h-full">
+          <circle cx="7" cy="16" r="2.5" fill="#06b6d4" />
+          <path d="M10 16H13L15.5 9L19.5 23L22 16H25" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
 
       {/* Brand Text */}
