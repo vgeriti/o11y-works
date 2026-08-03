@@ -1,54 +1,29 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useParams, Link } from 'react-router-dom';
 import { CodeBlock } from '../components/blog/CodeBlock';
 import { ArrowLeft, Clock, Calendar, Share2, BookOpen, ArrowRight, Check } from 'lucide-react';
 
-export interface ArticleDetail {
-  slug: string;
-  title: string;
-  summary: string;
-  publishedDate: string;
-  author: string;
-  authorId: string;
-  authorRole: string;
-  authorBio: string;
-  tool: string;
-  signal: string;
-  type: string;
-  readTimeMinutes: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content?: any;
-}
-
-interface BlogPostProps {
-  articleData?: ArticleDetail | null;
-  fallbackSlug?: string;
-}
-
-export const BlogPost: React.FC<BlogPostProps> = ({ articleData, fallbackSlug = 'otel-collector-pipeline-benchmark' }) => {
+export const BlogPost: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
 
-  // Fallback post data if none provided
-  const defaultPost = {
-    slug: fallbackSlug,
-    title: fallbackSlug === 'test-blog' ? 'test blog' : 'Tuning the OpenTelemetry Collector Pipeline for High-Throughput Streams',
-    summary: fallbackSlug === 'test-blog' ? 'Test post created via Keystatic Studio.' : 'A comprehensive benchmark and step-by-step runbook for optimizing memory_limiter, batching, and sampling processors under 100k events/sec load.',
+  // Mock post content data
+  const postData = {
+    slug: slug || 'otel-collector-pipeline-benchmark',
+    title: 'Tuning the OpenTelemetry Collector Pipeline for High-Throughput Streams',
+    summary: 'A comprehensive benchmark and step-by-step runbook for optimizing memory_limiter, batching, and sampling processors under 100k events/sec load.',
     publishedDate: '2026-08-02',
     author: 'Venkatesh Geriti',
     authorId: 'vgeriti',
     authorRole: 'Principal Observability Architect',
     authorBio: 'Building open-source telemetry collectors, log processors, and monitoring automation tools.',
-    tool: fallbackSlug === 'test-blog' ? 'Splunk' : 'OTel',
-    signal: fallbackSlug === 'test-blog' ? 'Metrics' : 'Traces',
-    type: fallbackSlug === 'test-blog' ? 'Guide' : 'Benchmark',
-    readTimeMinutes: 8,
+    tool: 'OTel',
+    signal: 'Traces',
+    type: 'Benchmark',
+    readTimeMinutes: 12,
   };
-
-  const postData = articleData || defaultPost;
 
   // Related articles data
   const relatedArticles = [
@@ -98,12 +73,40 @@ export const BlogPost: React.FC<BlogPostProps> = ({ articleData, fallbackSlug = 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // SEO JSON-LD Metadata Injection
+  useEffect(() => {
+    const schemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: postData.title,
+      description: postData.summary,
+      datePublished: postData.publishedDate,
+      dateModified: postData.publishedDate,
+      author: {
+        '@type': 'Person',
+        name: postData.author,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'o11y.works',
+        logo: 'https://o11y.works/assets/brand/svg/logo-mark.svg',
+      },
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schemaData);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [slug, postData.title, postData.summary, postData.publishedDate, postData.author]);
+
   const handleShare = async () => {
-    if (typeof window !== 'undefined') {
-      await navigator.clipboard.writeText(window.location.href);
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-    }
+    await navigator.clipboard.writeText(window.location.href);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
   };
 
   const otelCode = `receivers:
@@ -138,25 +141,25 @@ service:
 | eval threshold = if(count > 5, "CRITICAL", "OK")`;
 
   return (
-    <div className="min-h-screen bg-[#030712] text-gray-100 pt-28 pb-20 relative">
+    <div className="min-h-screen bg-background text-gray-100 pt-28 pb-20 relative">
       {/* Top Fixed Reading Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-1 bg-[#06b6d4] z-50 transition-all duration-150 shadow-[0_0_10px_#06b6d4]"
+        className="fixed top-0 left-0 h-1 bg-brand-cyan z-50 transition-all duration-150 shadow-[0_0_10px_#06b6d4]"
         style={{ width: `${scrollProgress}%` }}
       />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Link */}
         <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-[#06b6d4] transition-colors mb-6"
+          to="/blog"
+          className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-brand-cyan transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Blog & Runbooks
         </Link>
 
         {/* 1. TOP TAG PILLS */}
         <div className="flex flex-wrap items-center gap-2.5 mb-4">
-          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#06b6d4]/20 text-[#06b6d4] border border-[#06b6d4]/40">
+          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40">
             {postData.tool}
           </span>
           <span className="px-3 py-1 rounded-full text-xs font-mono bg-surface text-gray-300 border border-white/10">
@@ -172,17 +175,17 @@ service:
           {postData.title}
         </h1>
 
-        {/* 3. COMPACT METADATA BAR */}
+        {/* 3. COMPACT METADATA BAR (With Author Link) */}
         <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-white/10 text-xs font-mono text-gray-400 mb-10">
           <div className="flex items-center gap-4">
             <Link
-              href={`/blog/author/${postData.authorId}`}
-              className="flex items-center gap-2 text-gray-200 hover:text-[#06b6d4] transition-colors font-semibold"
+              to={`/blog/author/${postData.authorId}`}
+              className="flex items-center gap-2 text-gray-200 hover:text-brand-cyan transition-colors font-semibold"
             >
               <img
                 src={`https://github.com/${postData.authorId}.png`}
                 alt={postData.author}
-                className="w-5 h-5 rounded-full border border-[#06b6d4]/40"
+                className="w-5 h-5 rounded-full border border-brand-cyan/40"
               />
               {postData.author}
             </Link>
@@ -198,7 +201,7 @@ service:
 
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-gray-400 hover:text-[#06b6d4] transition-colors"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-brand-cyan transition-colors"
           >
             {linkCopied ? (
               <>
@@ -223,38 +226,34 @@ service:
               </p>
             </div>
 
-            {postData.slug === 'otel-collector-pipeline-benchmark' && (
-              <>
-                <div id="pipeline-sequence" className="scroll-mt-32">
-                  <h2 className="text-2xl font-bold text-white mb-4">
-                    1. Recommended Processor Pipeline Sequence
-                  </h2>
-                  <p className="text-gray-300 leading-relaxed mb-4">
-                    The sequence of processors inside your OpenTelemetry Collector configuration directly controls memory limits and throughput latency:
-                  </p>
+            <div id="pipeline-sequence" className="scroll-mt-32">
+              <h2 className="text-2xl font-bold text-white mb-4">
+                1. Recommended Processor Pipeline Sequence
+              </h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                The sequence of processors inside your OpenTelemetry Collector configuration directly controls memory limits and throughput latency:
+              </p>
 
-                  <CodeBlock code={otelCode} language="yaml" fileName="otel-collector-config.yaml" />
-                </div>
+              <CodeBlock code={otelCode} language="yaml" fileName="otel-collector-config.yaml" />
+            </div>
 
-                <div id="splunk-verification" className="scroll-mt-32">
-                  <h2 className="text-2xl font-bold text-white mt-10 mb-4">
-                    2. Verifying Pipeline Health via Splunk SPL
-                  </h2>
-                  <p className="text-gray-300 leading-relaxed mb-4">
-                    Use this SPL query to inspect collector processor errors and drop rates in Splunk:
-                  </p>
+            <div id="splunk-verification" className="scroll-mt-32">
+              <h2 className="text-2xl font-bold text-white mt-10 mb-4">
+                2. Verifying Pipeline Health via Splunk SPL
+              </h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Use this SPL query to inspect collector processor errors and drop rates in Splunk:
+              </p>
 
-                  <CodeBlock code={splunkCode} language="spl" fileName="collector-health.spl" />
-                </div>
-              </>
-            )}
+              <CodeBlock code={splunkCode} language="spl" fileName="collector-health.spl" />
+            </div>
 
-            {/* 5. STANDALONE AUTHOR SECTION */}
+            {/* 5. STANDALONE AUTHOR SECTION (Clickable link to Author Profile) */}
             <Link
-              href={`/blog/author/${postData.authorId}`}
-              className="group mt-14 p-6 sm:p-8 rounded-r-2xl bg-surface/90 border border-white/10 border-l-4 border-l-[#06b6d4] flex flex-col sm:flex-row items-start sm:items-center gap-5 shadow-xl hover:border-[#06b6d4]/40 transition-all block"
+              to={`/blog/author/${postData.authorId}`}
+              className="group mt-14 p-6 sm:p-8 rounded-r-2xl bg-surface/90 border border-white/10 border-l-4 border-l-brand-cyan flex flex-col sm:flex-row items-start sm:items-center gap-5 shadow-xl hover:border-brand-cyan/40 transition-all block"
             >
-              <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#06b6d4]/40 bg-surface shrink-0">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden border border-brand-cyan/40 bg-surface shrink-0">
                 <img
                   src={`https://github.com/${postData.authorId}.png`}
                   alt={postData.author}
@@ -263,10 +262,10 @@ service:
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-lg font-bold text-white group-hover:text-[#06b6d4] transition-colors">
+                  <h3 className="text-lg font-bold text-white group-hover:text-brand-cyan transition-colors">
                     {postData.author}
                   </h3>
-                  <span className="text-xs font-mono text-[#06b6d4]">
+                  <span className="text-xs font-mono text-brand-cyan">
                     {postData.authorRole} →
                   </span>
                 </div>
@@ -279,7 +278,7 @@ service:
             {/* 6. RELATED ARTICLES & RUNBOOKS SECTION */}
             <div className="mt-16 pt-10 border-t border-white/10">
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#06b6d4]" />
+                <BookOpen className="w-5 h-5 text-brand-cyan" />
                 Related Articles & Runbooks
               </h3>
 
@@ -287,16 +286,16 @@ service:
                 {relatedArticles.map((rel) => (
                   <Link
                     key={rel.slug}
-                    href={`/blog/${rel.slug}`}
-                    className="group block p-5 rounded-2xl bg-surface/80 border border-white/10 hover:border-[#06b6d4]/40 transition-all duration-300 shadow-md"
+                    to={`/blog/${rel.slug}`}
+                    className="group block p-5 rounded-2xl bg-surface/80 border border-white/10 hover:border-brand-cyan/40 transition-all duration-300 shadow-md"
                   >
                     <div className="flex items-center gap-2 text-[11px] font-mono text-gray-400 mb-2">
-                      <span className="text-[#06b6d4] font-semibold">{rel.tool}</span>
+                      <span className="text-brand-cyan font-semibold">{rel.tool}</span>
                       <span>•</span>
                       <span>{rel.readTimeMinutes} min read</span>
                     </div>
 
-                    <h4 className="text-base font-bold text-white group-hover:text-[#06b6d4] transition-colors mb-2 line-clamp-2">
+                    <h4 className="text-base font-bold text-white group-hover:text-brand-cyan transition-colors mb-2 line-clamp-2">
                       {rel.title}
                     </h4>
 
@@ -304,7 +303,7 @@ service:
                       {rel.summary}
                     </p>
 
-                    <span className="inline-flex items-center gap-1 text-xs font-mono text-[#06b6d4] font-semibold group-hover:translate-x-1 transition-transform">
+                    <span className="inline-flex items-center gap-1 text-xs font-mono text-brand-cyan font-semibold group-hover:translate-x-1 transition-transform">
                       Read Runbook <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>
@@ -316,7 +315,7 @@ service:
           {/* Sticky Table of Contents Sidebar */}
           <div className="lg:col-span-4">
             <div className="sticky top-28 p-6 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#06b6d4] uppercase tracking-wider mb-4 font-bold">
+              <div className="flex items-center gap-2 text-xs font-mono text-brand-cyan uppercase tracking-wider mb-4 font-bold">
                 <BookOpen className="w-4 h-4" /> Table of Contents
               </div>
               <ul className="space-y-3 text-xs font-mono border-l border-white/10 pl-4">
@@ -324,36 +323,32 @@ service:
                   <a
                     href="#overview"
                     className={`transition-colors block ${
-                      activeSection === 'overview' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
+                      activeSection === 'overview' ? 'text-brand-cyan font-bold pl-1 border-l-2 border-brand-cyan -ml-[17px]' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     Overview
                   </a>
                 </li>
-                {postData.slug === 'otel-collector-pipeline-benchmark' && (
-                  <>
-                    <li>
-                      <a
-                        href="#pipeline-sequence"
-                        className={`transition-colors block ${
-                          activeSection === 'pipeline-sequence' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        1. Recommended Sequence
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#splunk-verification"
-                        className={`transition-colors block ${
-                          activeSection === 'splunk-verification' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
-                        }`}
-                      >
-                        2. Verifying via Splunk
-                      </a>
-                    </li>
-                  </>
-                )}
+                <li>
+                  <a
+                    href="#pipeline-sequence"
+                    className={`transition-colors block ${
+                      activeSection === 'pipeline-sequence' ? 'text-brand-cyan font-bold pl-1 border-l-2 border-brand-cyan -ml-[17px]' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    1. Recommended Sequence
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#splunk-verification"
+                    className={`transition-colors block ${
+                      activeSection === 'splunk-verification' ? 'text-brand-cyan font-bold pl-1 border-l-2 border-brand-cyan -ml-[17px]' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    2. Verifying via Splunk
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

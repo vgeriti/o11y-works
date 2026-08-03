@@ -1,123 +1,117 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Logo } from '../ui/Logo';
-import { Github, Twitter, Linkedin, BookOpen, Layers, ShieldCheck, Heart } from 'lucide-react';
+import { Badge } from '../ui/Badge';
+import { Globe, Shield, Heart } from 'lucide-react';
+
+const GithubIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+  </svg>
+);
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#030712] border-t border-white/10 pt-16 pb-12 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-          {/* Brand Info */}
-          <div className="lg:col-span-2 space-y-4">
+    <footer className="bg-surface/80 border-t border-white/10 pt-16 pb-12 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-white/10">
+          {/* Col 1: Brand & Positioning */}
+          <div className="md:col-span-5 flex flex-col gap-4">
             <Logo showTagline />
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              Open, vendor-neutral observability foundation. Practical knowledge, operational playbooks, and standardized telemetry processing tools.
+            <p className="text-sm text-gray-400 max-w-md leading-relaxed mt-2">
+              o11y.works is a community-driven, vendor-neutral ecosystem empowering engineers with practical knowledge, open developer tools, and real-world observability engineering practices.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="https://github.com/o11yworks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-surface/60 border border-white/10 text-gray-400 hover:text-white hover:border-brand-cyan/40 transition-colors"
-                aria-label="GitHub Repository"
-              >
-                <Github className="w-4 h-4" />
-              </a>
-              <a
-                href="https://twitter.com/o11yworks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-surface/60 border border-white/10 text-gray-400 hover:text-white hover:border-brand-cyan/40 transition-colors"
-                aria-label="Twitter Profile"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href="https://linkedin.com/company/o11yworks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-surface/60 border border-white/10 text-gray-400 hover:text-white hover:border-brand-cyan/40 transition-colors"
-                aria-label="LinkedIn Page"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="cyan" size="sm">
+                Vendor Neutral
+              </Badge>
+              <Badge variant="outline" size="sm">
+                Open Foundation
+              </Badge>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 mb-4 flex items-center gap-2">
-              <Layers className="w-3.5 h-3.5 text-[#06b6d4]" /> Navigation
-            </h3>
-            <ul className="space-y-2.5 text-sm text-gray-400">
+          {/* Col 2: Navigation Links */}
+          <div className="md:col-span-3">
+            <h4 className="font-mono text-xs uppercase tracking-widest text-gray-400 font-semibold mb-4">
+              Ecosystem Sitemap
+            </h4>
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">Home</Link>
+                <Link to="/" className="text-gray-300 hover:text-white transition-colors">
+                  Home
+                </Link>
               </li>
               <li>
-                <Link href="/ecosystem" className="hover:text-white transition-colors">Ecosystem Tools</Link>
+                <Link to="/ecosystem" className="text-gray-300 hover:text-white transition-colors">
+                  Ecosystem Architecture
+                </Link>
               </li>
               <li>
-                <Link href="/knowledge" className="hover:text-white transition-colors">Knowledge Base</Link>
+                <Link to="/knowledge" className="text-gray-300 hover:text-white transition-colors">
+                  Knowledge & Learning
+                </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-white transition-colors">Blog & Runbooks</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 mb-4 flex items-center gap-2">
-              <BookOpen className="w-3.5 h-3.5 text-[#06b6d4]" /> Resources
-            </h3>
-            <ul className="space-y-2.5 text-sm text-gray-400">
-              <li>
-                <Link href="/blog/contribute" className="hover:text-white transition-colors">Write for o11y.works</Link>
+                <Link to="/community" className="text-gray-300 hover:text-white transition-colors">
+                  Community & Working Groups
+                </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-white transition-colors">Keystatic Studio (/admin)</Link>
-              </li>
-              <li>
-                <a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                  RSS 2.0 Feed
-                </a>
-              </li>
-              <li>
-                <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                  XML Sitemap
-                </a>
+                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
+                  About Foundation & Principles
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Ecosystem */}
-          <div>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-gray-300 mb-4 flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#06b6d4]" /> Foundation
-            </h3>
-            <ul className="space-y-2.5 text-sm text-gray-400">
-              <li>
-                <Link href="/community" className="hover:text-[#06b6d4] transition-colors">Community Hub</Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-[#06b6d4] transition-colors">About & Team</Link>
-              </li>
-              <li>
-                <a href="https://github.com/o11yworks/o11y-works" target="_blank" rel="noopener noreferrer" className="hover:text-[#06b6d4] transition-colors">
-                  Open Source Code
+          {/* Col 3: Principles & Channels */}
+          <div className="md:col-span-4">
+            <h4 className="font-mono text-xs uppercase tracking-widest text-gray-400 font-semibold mb-4">
+              Ecosystem Channels
+            </h4>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-2 text-gray-300">
+                <GithubIcon className="w-4 h-4 text-brand-cyan" />
+                <a 
+                  href="https://github.com/o11yworks" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-white transition-colors"
+                >
+                  GitHub Organization
                 </a>
               </li>
+              <li className="flex items-center gap-2 text-gray-300">
+                <Globe className="w-4 h-4 text-brand-blue" />
+                <span className="text-gray-400">Open Standards & Specifications</span>
+              </li>
+              <li className="flex items-center gap-2 text-gray-300">
+                <Shield className="w-4 h-4 text-brand-emerald" />
+                <span className="text-gray-400">Community Code of Conduct</span>
+              </li>
             </ul>
+
+            <div className="mt-6 p-3 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-400 leading-normal">
+              Not affiliated with any single commercial vendor. Dedicated strictly to open engineering collaboration.
+            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-gray-500">
-          <p>© {new Date().getFullYear()} o11y.works. Open-source observability foundation.</p>
-          <p className="flex items-center gap-1">
-            Built with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for SREs & Platform Engineers.
-          </p>
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-mono border-t border-white/5">
+          <div>
+            &copy; {new Date().getFullYear()} o11y.works Foundation. Released under Open Community Licensing.
+          </div>
+          <div className="flex items-center gap-1 text-gray-400">
+            <span>Built for the global observability community</span>
+            <Heart className="w-3.5 h-3.5 text-brand-cyan inline fill-brand-cyan/20" />
+          </div>
+        </div>
+
+        {/* Legal & Trademark Disclaimer */}
+        <div className="mt-4 pt-4 text-[11px] text-gray-600 font-mono leading-relaxed text-center sm:text-left">
+          OpenTelemetry, Prometheus, Grafana, Jaeger, Thanos, Kubernetes, and eBPF are registered trademarks of their respective foundations (Linux Foundation, CNCF, Grafana Labs). o11y.works is an independent community foundation and is not officially affiliated with or endorsed by these organizations. Content provided as-is without warranty.
         </div>
       </div>
     </footer>
