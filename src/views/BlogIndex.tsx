@@ -4,14 +4,32 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, Clock, ArrowRight, BookOpen } from 'lucide-react';
 
-export const BlogIndex: React.FC = () => {
+export interface ArticleItem {
+  slug: string;
+  title: string;
+  summary: string;
+  publishedDate: string;
+  author: string;
+  tool: string;
+  signal: string;
+  type: string;
+  featured: boolean;
+  readTimeMinutes: number;
+  coverImage: string;
+}
+
+interface BlogIndexProps {
+  articles?: ArticleItem[];
+}
+
+export const BlogIndex: React.FC<BlogIndexProps> = ({ articles = [] }) => {
   const [selectedTool, setSelectedTool] = useState<string>('All');
   const [selectedSignal, setSelectedSignal] = useState<string>('All');
   const [selectedType, setSelectedType] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Sample articles data
-  const sampleArticles = [
+  // Fallback sample articles if none supplied
+  const defaultArticles: ArticleItem[] = [
     {
       slug: 'otel-collector-pipeline-benchmark',
       title: 'Tuning the OpenTelemetry Collector Pipeline for High-Throughput Streams',
@@ -53,8 +71,10 @@ export const BlogIndex: React.FC = () => {
     },
   ];
 
+  const displayArticles = articles.length > 0 ? articles : defaultArticles;
+
   // Filtering Logic
-  const filteredArticles = sampleArticles.filter((article) => {
+  const filteredArticles = displayArticles.filter((article) => {
     const matchesTool = selectedTool === 'All' || article.tool === selectedTool;
     const matchesSignal = selectedSignal === 'All' || article.signal === selectedSignal;
     const matchesType = selectedType === 'All' || article.type === selectedType;
@@ -74,7 +94,7 @@ export const BlogIndex: React.FC = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-radial-gradient opacity-15 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Restored Spacious Hero Section Header */}
+        {/* Header Title */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#06b6d4]/10 border border-[#06b6d4]/20 text-[#06b6d4] text-xs font-mono mb-4">
             <BookOpen className="w-3.5 h-3.5" />
@@ -89,7 +109,7 @@ export const BlogIndex: React.FC = () => {
           </p>
         </div>
 
-        {/* Single-Line Integrated Filter Bar */}
+        {/* Integrated Filter Bar */}
         <div className="mb-12 p-3 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md shadow-2xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Tool Dropdown */}
@@ -183,7 +203,7 @@ export const BlogIndex: React.FC = () => {
                   />
                   <div className="absolute top-3 left-3 flex gap-2">
                     <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[#06b6d4] text-[#030712]">
-                      FEATURED HERO
+                      FEATURED RUNBOOK
                     </span>
                     <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-[#030712]/90 text-gray-200 border border-white/20">
                       {featuredArticle.tool}
