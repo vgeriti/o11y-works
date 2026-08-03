@@ -2,32 +2,53 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { CodeBlock } from '../components/blog/CodeBlock';
 import { ArrowLeft, Clock, Calendar, Share2, BookOpen, ArrowRight, Check } from 'lucide-react';
 
-export const BlogPost: React.FC = () => {
-  const params = useParams();
-  const slug = (params?.slug as string) || 'otel-collector-pipeline-benchmark';
+export interface ArticleDetail {
+  slug: string;
+  title: string;
+  summary: string;
+  publishedDate: string;
+  author: string;
+  authorId: string;
+  authorRole: string;
+  authorBio: string;
+  tool: string;
+  signal: string;
+  type: string;
+  readTimeMinutes: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content?: any;
+}
+
+interface BlogPostProps {
+  articleData?: ArticleDetail | null;
+  fallbackSlug?: string;
+}
+
+export const BlogPost: React.FC<BlogPostProps> = ({ articleData, fallbackSlug = 'otel-collector-pipeline-benchmark' }) => {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
 
-  // Mock post content data
-  const postData = {
-    slug: slug,
-    title: 'Tuning the OpenTelemetry Collector Pipeline for High-Throughput Streams',
-    summary: 'A comprehensive benchmark and step-by-step runbook for optimizing memory_limiter, batching, and sampling processors under 100k events/sec load.',
+  // Fallback post data if none provided
+  const defaultPost = {
+    slug: fallbackSlug,
+    title: fallbackSlug === 'test-blog' ? 'test blog' : 'Tuning the OpenTelemetry Collector Pipeline for High-Throughput Streams',
+    summary: fallbackSlug === 'test-blog' ? 'Test post created via Keystatic Studio.' : 'A comprehensive benchmark and step-by-step runbook for optimizing memory_limiter, batching, and sampling processors under 100k events/sec load.',
     publishedDate: '2026-08-02',
     author: 'Venkatesh Geriti',
     authorId: 'vgeriti',
     authorRole: 'Principal Observability Architect',
     authorBio: 'Building open-source telemetry collectors, log processors, and monitoring automation tools.',
-    tool: 'OTel',
-    signal: 'Traces',
-    type: 'Benchmark',
-    readTimeMinutes: 12,
+    tool: fallbackSlug === 'test-blog' ? 'Splunk' : 'OTel',
+    signal: fallbackSlug === 'test-blog' ? 'Metrics' : 'Traces',
+    type: fallbackSlug === 'test-blog' ? 'Guide' : 'Benchmark',
+    readTimeMinutes: 8,
   };
+
+  const postData = articleData || defaultPost;
 
   // Related articles data
   const relatedArticles = [
@@ -202,27 +223,31 @@ service:
               </p>
             </div>
 
-            <div id="pipeline-sequence" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-white mb-4">
-                1. Recommended Processor Pipeline Sequence
-              </h2>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                The sequence of processors inside your OpenTelemetry Collector configuration directly controls memory limits and throughput latency:
-              </p>
+            {postData.slug === 'otel-collector-pipeline-benchmark' && (
+              <>
+                <div id="pipeline-sequence" className="scroll-mt-32">
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    1. Recommended Processor Pipeline Sequence
+                  </h2>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    The sequence of processors inside your OpenTelemetry Collector configuration directly controls memory limits and throughput latency:
+                  </p>
 
-              <CodeBlock code={otelCode} language="yaml" fileName="otel-collector-config.yaml" />
-            </div>
+                  <CodeBlock code={otelCode} language="yaml" fileName="otel-collector-config.yaml" />
+                </div>
 
-            <div id="splunk-verification" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-white mt-10 mb-4">
-                2. Verifying Pipeline Health via Splunk SPL
-              </h2>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                Use this SPL query to inspect collector processor errors and drop rates in Splunk:
-              </p>
+                <div id="splunk-verification" className="scroll-mt-32">
+                  <h2 className="text-2xl font-bold text-white mt-10 mb-4">
+                    2. Verifying Pipeline Health via Splunk SPL
+                  </h2>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Use this SPL query to inspect collector processor errors and drop rates in Splunk:
+                  </p>
 
-              <CodeBlock code={splunkCode} language="spl" fileName="collector-health.spl" />
-            </div>
+                  <CodeBlock code={splunkCode} language="spl" fileName="collector-health.spl" />
+                </div>
+              </>
+            )}
 
             {/* 5. STANDALONE AUTHOR SECTION */}
             <Link
@@ -305,26 +330,30 @@ service:
                     Overview
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#pipeline-sequence"
-                    className={`transition-colors block ${
-                      activeSection === 'pipeline-sequence' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    1. Recommended Sequence
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#splunk-verification"
-                    className={`transition-colors block ${
-                      activeSection === 'splunk-verification' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    2. Verifying via Splunk
-                  </a>
-                </li>
+                {postData.slug === 'otel-collector-pipeline-benchmark' && (
+                  <>
+                    <li>
+                      <a
+                        href="#pipeline-sequence"
+                        className={`transition-colors block ${
+                          activeSection === 'pipeline-sequence' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        1. Recommended Sequence
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#splunk-verification"
+                        className={`transition-colors block ${
+                          activeSection === 'splunk-verification' ? 'text-[#06b6d4] font-bold pl-1 border-l-2 border-[#06b6d4] -ml-[17px]' : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        2. Verifying via Splunk
+                      </a>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
