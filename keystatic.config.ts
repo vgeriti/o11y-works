@@ -16,9 +16,6 @@ export default config({
         repo: 'o11yworks/o11y-works',
         branchPrefix: 'contributor-drafts/',
       },
-  ui: {
-    brand: { name: 'o11y.works Studio' },
-  },
   collections: {
     blog: collection({
       label: 'Blog Posts & Runbooks',
