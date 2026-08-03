@@ -1,14 +1,20 @@
 import { config, fields, collection } from '@keystatic/core';
 
+// Automatically detect local development vs production website domain
+const isLocal =
+  typeof window !== 'undefined'
+    ? window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    : process.env.NODE_ENV !== 'production';
+
 export default config({
-  storage: process.env.NODE_ENV === 'production'
+  storage: isLocal
     ? {
+        kind: 'local',
+      }
+    : {
         kind: 'github',
         repo: 'o11yworks/o11y-works',
         branchPrefix: 'contributor-drafts/',
-      }
-    : {
-        kind: 'local',
       },
   collections: {
     blog: collection({
