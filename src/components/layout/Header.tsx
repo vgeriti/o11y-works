@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Logo } from '../ui/Logo';
 import { Button } from '../ui/Button';
 import { Menu, X, PenSquare } from 'lucide-react';
@@ -16,9 +19,9 @@ const navItems = [
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
-  const isBlogRoute = location.pathname.startsWith('/blog');
+  const isBlogRoute = pathname ? pathname.startsWith('/blog') : false;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,13 +34,13 @@ export const Header: React.FC = () => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, [location]);
+  }, [pathname]);
 
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-white/10 shadow-lg py-3'
+          ? 'bg-[#030712]/80 backdrop-blur-md border-b border-white/10 shadow-lg py-3'
           : 'bg-transparent py-5'
       }`}
     >
@@ -47,7 +50,7 @@ export const Header: React.FC = () => {
           <div className="flex items-center gap-3">
             <Logo />
             {isBlogRoute && (
-              <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 tracking-wider">
+              <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#06b6d4]/15 text-[#06b6d4] border border-[#06b6d4]/30 tracking-wider">
                 BLOG
               </span>
             )}
@@ -55,27 +58,28 @@ export const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 bg-surface/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  `px-3.5 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
-                    isActive || (item.path === '/blog' && isBlogRoute)
-                      ? 'text-white bg-white/10 shadow-sm border border-white/10 text-brand-cyan'
+            {navItems.map((item) => {
+              const isActive = pathname === item.path || (item.path === '/blog' && isBlogRoute);
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`px-3.5 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
+                    isActive
+                      ? 'text-white bg-white/10 shadow-sm border border-white/10 text-[#06b6d4]'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`
-                }
-              >
-                {item.name}
-              </NavLink>
-            ))}
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
             <Button
-              to="/blog/contribute"
+              href="/blog/contribute"
               variant="primary"
               size="sm"
               icon={<PenSquare className="w-3.5 h-3.5" />}
@@ -88,7 +92,7 @@ export const Header: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-brand-cyan"
+            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#06b6d4]"
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"
           >
@@ -101,25 +105,26 @@ export const Header: React.FC = () => {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-x-0 top-[65px] bg-surface/95 backdrop-blur-xl border-b border-white/10 p-6 shadow-2xl animate-fadeIn">
           <nav className="flex flex-col gap-3">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  `px-4 py-3 text-base font-medium rounded-lg transition-colors ${
-                    isActive || (item.path === '/blog' && isBlogRoute)
-                      ? 'text-white bg-brand-cyan/20 border border-brand-cyan/40 font-semibold'
+            {navItems.map((item) => {
+              const isActive = pathname === item.path || (item.path === '/blog' && isBlogRoute);
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? 'text-white bg-[#06b6d4]/20 border border-[#06b6d4]/40 font-semibold'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
-                  }`
-                }
-              >
-                {item.name}
-              </NavLink>
-            ))}
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
             <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
               <Link
-                to="/blog/contribute"
-                className="w-full text-center px-4 py-3 rounded-lg text-sm font-medium bg-brand-cyan text-background font-semibold hover:bg-brand-cyan/90 transition-colors"
+                href="/blog/contribute"
+                className="w-full text-center px-4 py-3 rounded-lg text-sm font-medium bg-[#06b6d4] text-[#030712] font-semibold hover:bg-[#06b6d4]/90 transition-colors"
               >
                 ✍️ Contributor Portal & Guidelines
               </Link>
